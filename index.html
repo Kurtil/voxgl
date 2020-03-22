@@ -11,8 +11,10 @@
   <script id="2d-fragment-shader" type="notjs">
     precision mediump float;
 
+    uniform vec4 u_color;
+
     void main() {
-      gl_FragColor = vec4(1, 0, 0.5, 1);
+      gl_FragColor = u_color;
     }
   </script>
   <script type="module">
@@ -38,6 +40,7 @@
     const program = createProgram(gl, vertexShader, fragmentShader);
 
     const positionAttributeLocation = gl.getAttribLocation(program, "a_position");
+    const colorUniformLocation = gl.getUniformLocation(program, "u_color");
 
     const positionBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
@@ -47,6 +50,9 @@
       0, 0,
       0, 0.5,
       0.7, 0,
+      0, 0.5,
+      0.7, 0.5,
+      0.7, 0
     ];
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
 
@@ -63,7 +69,9 @@
     gl.vertexAttribPointer(
       positionAttributeLocation, 2, gl.FLOAT, false, 0, 0);
 
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    gl.uniform4f(colorUniformLocation, Math.random(), Math.random(), Math.random(), 1);
+
+    gl.drawArrays(gl.TRIANGLES, 0, positions.length / 2);
 
   </script>
 </div>
