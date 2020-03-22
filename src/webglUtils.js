@@ -34,4 +34,3 @@ export function resize(canvas) {
     }
     return canvas;
 }
-

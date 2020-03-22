@@ -27,6 +27,8 @@
       resize
     } from "./src/webglUtils.js";
 
+    import makeClock from "./src/clock.js";
+
     // INITIALIZATION
 
     const canvas = document.getElementById("canvas3d");
@@ -61,12 +63,12 @@
       1, 0, 0,
       1, 1, 0,
       // Back face
+      1, 0, -1,
       0, 0, -1,
-      1, 0, -1,
-      0, 1, -1,
-      0, 1, -1,
-      1, 0, -1,
       1, 1, -1,
+      1, 1, -1,
+      0, 0, -1,
+      0, 1, -1,
       // Top face
       0, 1, 0,
       1, 1, 0,
@@ -75,12 +77,12 @@
       1, 1, 0,
       1, 1, -1,
       // Bottom face
-      0, 0, 0,
-      1, 0, 0,
       0, 0, -1,
-      0, 0, -1,
-      1, 0, 0,
       1, 0, -1,
+      0, 0, 0,
+      0, 0, 0,
+      1, 0, -1,
+      1, 1, 0,
       // Right face
       1, 0, 0,
       1, 0, -1,
@@ -89,11 +91,11 @@
       1, 0, -1,
       1, 1, -1,
       // Left face
+      0, 0, -1,
       0, 0, 0,
-      0, 0, -1,
-      1, 1, 0,
-      1, 1, 0,
-      0, 0, -1,
+      0, 1, -1,
+      0, 1, -1,
+      0, 0, 0,
       0, 1, -1
     ];
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
@@ -102,31 +104,35 @@
     const viewM = new DOMMatrix();
     const projectionM = new DOMMatrix();
 
+    const clock = makeClock();
+    clock.start();
+
     // RENDERING
 
-    modelM.rotateSelf(25, 25, 25);
-    modelM.translateSelf(-0.2, -0.6, 0);
+    clock.on("tick", () => {
+      modelM.rotateSelf(1, 1, 1);
 
-    gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-    gl.clearColor(0.8, 0.8, 0.8, 1.0);
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+      gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+      gl.clearColor(0.8, 0.8, 0.8, 1.0);
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    gl.useProgram(program);
+      gl.useProgram(program);
 
-    gl.enableVertexAttribArray(positionAttributeLocation);
-    gl.enableVertexAttribArray(modelMatrixUniformLocation);
-    gl.enableVertexAttribArray(viewMatrixUniformLocation);
-    gl.enableVertexAttribArray(projectionMatrixUniformLocation);
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-    gl.vertexAttribPointer(
-      positionAttributeLocation, 3, gl.FLOAT, false, 0, 0);
+      gl.enableVertexAttribArray(positionAttributeLocation);
+      gl.enableVertexAttribArray(modelMatrixUniformLocation);
+      gl.enableVertexAttribArray(viewMatrixUniformLocation);
+      gl.enableVertexAttribArray(projectionMatrixUniformLocation);
+      gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+      gl.vertexAttribPointer(
+        positionAttributeLocation, 3, gl.FLOAT, false, 0, 0);
 
-    gl.uniform4f(colorUniformLocation, Math.random(), Math.random(), Math.random(), 1);
-    gl.uniformMatrix4fv(modelMatrixUniformLocation, false, modelM.toFloat32Array());
-    gl.uniformMatrix4fv(viewMatrixUniformLocation, false, viewM.toFloat32Array());
-    gl.uniformMatrix4fv(projectionMatrixUniformLocation, false, projectionM.toFloat32Array());
+      gl.uniform4f(colorUniformLocation, 0.5, 0.5, 0.5, 1);
+      gl.uniformMatrix4fv(modelMatrixUniformLocation, false, modelM.toFloat32Array());
+      gl.uniformMatrix4fv(viewMatrixUniformLocation, false, viewM.toFloat32Array());
+      gl.uniformMatrix4fv(projectionMatrixUniformLocation, false, projectionM.toFloat32Array());
 
-    gl.drawArrays(gl.TRIANGLES, 0, positions.length / 3);
+      gl.drawArrays(gl.TRIANGLES, 0, positions.length / 3);
+    });
 
   </script>
 </div>
