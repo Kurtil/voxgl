@@ -36,6 +36,10 @@
     canvas.height = 600;
     const gl = canvas.getContext("webgl");
 
+    gl.enable(gl.CULL_FACE);
+    gl.enable(gl.DEPTH_TEST);
+    gl.clearColor(0.8, 0.8, 0.8, 1.0);
+
     const vertexShaderSource = document.getElementById("2d-vertex-shader").text;
     const fragmentShaderSource = document.getElementById("2d-fragment-shader").text;
 
@@ -96,7 +100,7 @@
       0, 1, -1,
       0, 1, -1,
       0, 0, 0,
-      0, 1, -1
+      0, 1, 0
     ];
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
 
@@ -113,7 +117,6 @@
       modelM.rotateSelf(1, 1, 1);
 
       gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-      gl.clearColor(0.8, 0.8, 0.8, 1.0);
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
       gl.useProgram(program);
