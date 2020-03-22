@@ -32,7 +32,7 @@
 
     import makeClock from "./src/clock.js";
 
-    import { perspective } from "./src/camera.js";
+    import { makePerspectiveCamera } from "./src/camera.js";
 
     // INITIALIZATION
 
@@ -111,8 +111,13 @@
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 
     const modelM = new DOMMatrix();
-    const viewM = new DOMMatrix();
-    const projectionM = DOMMatrix.fromFloat32Array(perspective(30, gl.canvas.clientWidth / gl.canvas.clientHeight, 1, 1000));
+
+    const camera = makePerspectiveCamera({
+      aspect: gl.canvas.clientWidth / gl.canvas.clientHeight,
+      position: [0, 0, 2]
+    });
+    const projectionM = camera.getProjectionMatrix();
+    const viewM = camera.getViewMatrix();
 
     modelM.translateSelf(0, 0, -10);
 
@@ -123,6 +128,9 @@
 
     clock.on("tick", () => {
       modelM.rotateSelf(1, 1, 1);
+
+      const projectionM = camera.getProjectionMatrix();
+      const viewM = camera.getViewMatrix();
 
       gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
