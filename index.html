@@ -2,9 +2,12 @@
   <canvas id="canvas3d"></canvas>
   <script id="2d-vertex-shader" type="notjs">
     attribute vec4 a_position;
+    uniform mat4 u_mMat;
+    uniform mat4 u_vMat;
+    uniform mat4 u_pMat;
 
     void main() {
-      gl_Position = a_position;
+      gl_Position = u_pMat * u_vMat * u_mMat * a_position;
     }
   </script>
 
@@ -40,6 +43,9 @@
     const program = createProgram(gl, vertexShader, fragmentShader);
 
     const positionAttributeLocation = gl.getAttribLocation(program, "a_position");
+    const modelMatrixUniformLocation = gl.getUniformLocation(program, "u_mMat");
+    const viewMatrixUniformLocation = gl.getUniformLocation(program, "u_vMat");
+    const projectionMatrixUniformLocation = gl.getUniformLocation(program, "u_pMat");
     const colorUniformLocation = gl.getUniformLocation(program, "u_color");
 
     const positionBuffer = gl.createBuffer();
@@ -47,16 +53,59 @@
 
     // three 2d points
     const positions = [
-      0, 0,
-      0, 0.5,
-      0.7, 0,
-      0, 0.5,
-      0.7, 0.5,
-      0.7, 0
+      // Front face
+      0, 0, 0,
+      1, 0, 0,
+      0, 1, 0,
+      0, 1, 0,
+      1, 0, 0,
+      1, 1, 0,
+      // Back face
+      0, 0, -1,
+      1, 0, -1,
+      0, 1, -1,
+      0, 1, -1,
+      1, 0, -1,
+      1, 1, -1,
+      // Top face
+      0, 1, 0,
+      1, 1, 0,
+      0, 1, -1,
+      0, 1, -1,
+      1, 1, 0,
+      1, 1, -1,
+      // Bottom face
+      0, 0, 0,
+      1, 0, 0,
+      0, 0, -1,
+      0, 0, -1,
+      1, 0, 0,
+      1, 0, -1,
+      // Right face
+      1, 0, 0,
+      1, 0, -1,
+      1, 1, 0,
+      1, 1, 0,
+      1, 0, -1,
+      1, 1, -1,
+      // Left face
+      0, 0, 0,
+      0, 0, -1,
+      1, 1, 0,
+      1, 1, 0,
+      0, 0, -1,
+      0, 1, -1
     ];
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
 
+    const modelM = new DOMMatrix();
+    const viewM = new DOMMatrix();
+    const projectionM = new DOMMatrix();
+
     // RENDERING
+
+    modelM.rotateSelf(25, 25, 25);
+    modelM.translateSelf(-0.2, -0.6, 0);
 
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
     gl.clearColor(0.8, 0.8, 0.8, 1.0);
@@ -65,13 +114,19 @@
     gl.useProgram(program);
 
     gl.enableVertexAttribArray(positionAttributeLocation);
+    gl.enableVertexAttribArray(modelMatrixUniformLocation);
+    gl.enableVertexAttribArray(viewMatrixUniformLocation);
+    gl.enableVertexAttribArray(projectionMatrixUniformLocation);
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     gl.vertexAttribPointer(
-      positionAttributeLocation, 2, gl.FLOAT, false, 0, 0);
+      positionAttributeLocation, 3, gl.FLOAT, false, 0, 0);
 
     gl.uniform4f(colorUniformLocation, Math.random(), Math.random(), Math.random(), 1);
+    gl.uniformMatrix4fv(modelMatrixUniformLocation, false, modelM.toFloat32Array());
+    gl.uniformMatrix4fv(viewMatrixUniformLocation, false, viewM.toFloat32Array());
+    gl.uniformMatrix4fv(projectionMatrixUniformLocation, false, projectionM.toFloat32Array());
 
-    gl.drawArrays(gl.TRIANGLES, 0, positions.length / 2);
+    gl.drawArrays(gl.TRIANGLES, 0, positions.length / 3);
 
   </script>
 </div>
