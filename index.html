@@ -114,12 +114,13 @@
 
     const camera = makePerspectiveCamera({
       aspect: gl.canvas.clientWidth / gl.canvas.clientHeight,
-      position: [0, 0, 2]
+      cameraPosition: [2, 2, 2],
+      targetPosition: [0.5, 0.5, -2.5]
     });
     const projectionM = camera.getProjectionMatrix();
     const viewM = camera.getViewMatrix();
 
-    modelM.translateSelf(0, 0, -10);
+    modelM.translateSelf(0, 0, -2);
 
     const clock = makeClock();
     clock.start();
@@ -127,7 +128,7 @@
     // RENDERING
 
     clock.on("tick", () => {
-      modelM.rotateSelf(1, 1, 1);
+      camera.pivot(0, 1);
 
       const projectionM = camera.getProjectionMatrix();
       const viewM = camera.getViewMatrix();

@@ -30,14 +30,16 @@ function lookAt(cameraPosition, target, up) {
 }
 
 export function makePerspectiveCamera({
-  position = [0, 0, 0],
-  target = [0, 0, 0],
+  cameraPosition = [0, 0, 0],
+  targetPosition = [0, 0, 0],
   up = [0, 1, 0],
   fieldOfViewInDegrees = 30,
   aspect = 1,
   near = 1,
   far = 1000
 }) {
+  let position = cameraPosition;
+  let target = targetPosition;
   let cameraMatrix = lookAt(position, target, up);
   let projectionMatrix = perspective(fieldOfViewInDegrees, aspect, near, far);
 
@@ -54,7 +56,12 @@ export function makePerspectiveCamera({
       cameraMatrix = lookAt(newCameraPosition, target, up);
     },
     setTargetPosition(newTargetPosition) {
-      cameraMatrix = lookAt(newCameraPosition, newTargetPosition, up);
+      cameraMatrix = lookAt(position, newTargetPosition, up);
+    },
+    pivot(xAngle = 0, yAngle = 0) {
+      const cameraM = new DOMMatrixReadOnly().translate(...target).rotate(xAngle, yAngle).translate(...vec3.subtract(position, target));
+      position = [cameraM.m41, cameraM.m42, cameraM.m43];
+      cameraMatrix = lookAt(position, target, up);
     }
   }
 }
