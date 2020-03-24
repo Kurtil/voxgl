@@ -1,4 +1,6 @@
-import vec3 from "./vec3.js";
+import vect3 from "./vec3.js";
+
+import glMatgrix from "./lib/gl-matrix.js"
 
 export function perspective(fieldOfViewInDegrees, aspect, near, far) {
   const f = Math.tan(Math.PI * 0.5 - 0.5 * fieldOfViewInDegrees * Math.PI / 180);
@@ -13,10 +15,10 @@ export function perspective(fieldOfViewInDegrees, aspect, near, far) {
 };
 
 function lookAt(cameraPosition, target, up) {
-  const zAxis = vec3.normalize(
-    vec3.subtract(cameraPosition, target));
-  const xAxis = vec3.normalize(vec3.cross(up, zAxis));
-  const yAxis = vec3.normalize(vec3.cross(zAxis, xAxis));
+  const zAxis = vect3.normalize(
+    vect3.subtract(cameraPosition, target));
+  const xAxis = vect3.normalize(vect3.cross(up, zAxis));
+  const yAxis = vect3.normalize(vect3.cross(zAxis, xAxis));
 
   return new Float32Array([
     xAxis[0], xAxis[1], xAxis[2], 0,
@@ -30,17 +32,15 @@ function lookAt(cameraPosition, target, up) {
 }
 
 export function makePerspectiveCamera({
-  cameraPosition = [0, 0, 0],
-  targetPosition = [0, 0, 0],
+  eye = [0, 0, 0],
+  look = [0, 0, 0],
   up = [0, 1, 0],
   fieldOfViewInDegrees = 30,
   aspect = 1,
   near = 1,
   far = 1000
 }) {
-  let position = cameraPosition;
-  let target = targetPosition;
-  let cameraMatrix = lookAt(position, target, up);
+  let cameraMatrix = lookAt(eye, look, up);
   let projectionMatrix = perspective(fieldOfViewInDegrees, aspect, near, far);
 
   // TODO camera should not be dependant of DOMMatrixReadOnly
@@ -53,15 +53,30 @@ export function makePerspectiveCamera({
       return DOMMatrixReadOnly.fromFloat32Array(projectionMatrix);
     },
     setCameraPosition(newCameraPosition) {
-      cameraMatrix = lookAt(newCameraPosition, target, up);
+      cameraMatrix = lookAt(newCameraPosition, look, up);
     },
     setTargetPosition(newTargetPosition) {
-      cameraMatrix = lookAt(position, newTargetPosition, up);
+      cameraMatrix = lookAt(eye, newTargetPosition, up);
     },
-    pivot(xAngle = 0, yAngle = 0) {
-      const cameraM = new DOMMatrixReadOnly().translate(...target).rotate(xAngle, yAngle).translate(...vec3.subtract(position, target));
-      position = [cameraM.m41, cameraM.m42, cameraM.m43];
-      cameraMatrix = lookAt(position, target, up);
+    pivotAngle(xAngle, yAngle) {
+      const cameraM = new DOMMatrixReadOnly().translate(...look).rotate(xAngle, yAngle).translate(...vect3.subtract(eye, look));
+      eye = [cameraM.m41, cameraM.m42, cameraM.m43];
+      cameraMatrix = lookAt(eye, look, up);
+    },
+    pivot(pitch = 0, yaw = 0) {
+      const quatPitch = glMatgrix.quat4.fromAngleAxis(pitch * Math.PI / 180, [1, 0, 0]);
+      const quatYaw = glMatgrix.quat4.fromAngleAxis(yaw * Math.PI / 180, [0, 1, 0]);
+
+      const quatOrientation = glMatgrix.quat4.normalize(glMatgrix.quat4.multiply(quatPitch, quatYaw));
+
+      glMatgrix.quat4.normalize(quatOrientation);
+      const mat = glMatgrix.mat4.identity();
+      glMatgrix.mat4.fromRotationTranslation(quatOrientation, look, mat);
+      const sub = vect3.subtract(eye, look);
+      console.log(sub)
+      glMatgrix.mat4.translate(mat, sub);
+      eye = [mat[12], mat[13], mat[14]];
+      cameraMatrix = lookAt(eye, look, up);
     }
   }
-}
+};
