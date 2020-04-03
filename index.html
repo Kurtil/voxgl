@@ -6,25 +6,27 @@
     uniform mat4 u_mMat;
     uniform mat4 u_vMat;
     uniform mat4 u_pMat;
-    varying vec3 v_color;
+    // varying vec3 v_color;
 
     void main() {
       gl_Position = u_pMat * u_vMat * u_mMat * a_position;
-      v_color = a_color;
+      // v_color = a_color;
     }
   </script>
 
   <script id="2d-fragment-shader" type="notjs">
     precision mediump float;
 
-    varying vec3 v_color;
+    // varying vec3 v_color;
 
     void main() {
-      gl_FragColor = vec4(v_color, 1);
+      gl_FragColor = vec4(0, 0, 1, 1);
     }
   </script>
   <script type="module">
     import voxgl from './src/voxgl.js';
+
+    // TODO canvas id and shaders should be placed in anoher place
 
     voxgl();
   </script>

@@ -29,7 +29,7 @@ export default () => {
   const program = createProgram(gl, vertexShader, fragmentShader);
 
   const positionAttributeLocation = gl.getAttribLocation(program, "a_position");
-  const colorAttributeLocation = gl.getUniformLocation(program, "a_color");
+  // const colorAttributeLocation = gl.getUniformLocation(program, "a_color");
 
   const modelMatrixUniformLocation = gl.getUniformLocation(program, "u_mMat");
   const viewMatrixUniformLocation = gl.getUniformLocation(program, "u_vMat");
@@ -41,53 +41,53 @@ export default () => {
   // three 2d points
   const vertices = [
     // Front face
-    0, 0, 0, 1, 0, 0,
-    1, 0, 0, 1, 0, 0,
-    0, 1, 0, 1, 0, 0,
-    0, 1, 0, 1, 0, 0,
-    1, 0, 0, 1, 0, 0,
-    1, 1, 0, 1, 0, 0,
+    0, 0, 0,
+    1, 0, 0,
+    0, 1, 0,
+    0, 1, 0,
+    1, 0, 0,
+    1, 1, 0,
     // Back face
-    1, 0, -1, 0, 1, 0,
-    0, 0, -1, 0, 1, 0,
-    1, 1, -1, 0, 1, 0,
-    1, 1, -1, 0, 1, 0,
-    0, 0, -1, 0, 1, 0,
-    0, 1, -1, 0, 1, 0,
+    1, 0, -1,
+    0, 0, -1,
+    1, 1, -1,
+    1, 1, -1,
+    0, 0, -1,
+    0, 1, -1,
     // Top face
-    0, 1, 0, 0, 0, 1,
-    1, 1, 0, 0, 0, 1,
-    0, 1, -1, 0, 0, 1,
-    0, 1, -1, 0, 0, 1,
-    1, 1, 0, 0, 0, 1,
-    1, 1, -1, 0, 0, 1,
+    0, 1, 0,
+    1, 1, 0,
+    0, 1, -1,
+    0, 1, -1,
+    1, 1, 0,
+    1, 1, -1,
     // Bottom face
-    0, 0, -1, 1, 1, 0,
-    1, 0, -1, 1, 1, 0,
-    0, 0, 0, 1, 1, 0,
-    0, 0, 0, 1, 1, 0,
-    1, 0, -1, 1, 1, 0,
-    1, 0, 0, 1, 1, 0,
+    0, 0, -1,
+    1, 0, -1,
+    0, 0, 0,
+    0, 0, 0,
+    1, 0, -1,
+    1, 0, 0,
     // Right face
-    1, 0, 0, 1, 0, 1,
-    1, 0, -1, 1, 0, 1,
-    1, 1, 0, 1, 0, 1,
-    1, 1, 0, 1, 0, 1,
-    1, 0, -1, 1, 0, 1,
-    1, 1, -1, 1, 0, 1,
+    1, 0, 0,
+    1, 0, -1,
+    1, 1, 0,
+    1, 1, 0,
+    1, 0, -1,
+    1, 1, -1,
     // Left face
-    0, 0, -1, 0, 1, 1,
-    0, 0, 0, 0, 1, 1,
-    0, 1, -1, 0, 1, 1,
-    0, 1, -1, 0, 1, 1,
-    0, 0, 0, 0, 1, 1,
-    0, 1, 0, 0, 1, 1,
+    0, 0, -1,
+    0, 0, 0,
+    0, 1, -1,
+    0, 1, -1,
+    0, 0, 0,
+    0, 1, 0,
   ];
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 
   const camera = makePerspectiveCamera({
     aspect: gl.canvas.clientWidth / gl.canvas.clientHeight,
-    eye: [0.5, 0.5, 0],
+    eye: [-5, 10, 0],
     look: [0, 0, -20]
   });
 
@@ -108,13 +108,13 @@ export default () => {
     // set attributes
     gl.useProgram(program);
     gl.enableVertexAttribArray(positionAttributeLocation);
-    gl.enableVertexAttribArray(colorAttributeLocation);
+    // gl.enableVertexAttribArray(colorAttributeLocation);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, verticesBuffer);
     gl.vertexAttribPointer(
-      positionAttributeLocation, 3, gl.FLOAT, false, Float32Array.BYTES_PER_ELEMENT * 6, 0);
-    gl.vertexAttribPointer(
-      colorAttributeLocation, 3, gl.FLOAT, false, Float32Array.BYTES_PER_ELEMENT * 6, Float32Array.BYTES_PER_ELEMENT * 3);
+      positionAttributeLocation, 3, gl.FLOAT, false, 0, 0);
+    // gl.vertexAttribPointer(
+    //   colorAttributeLocation, 3, gl.FLOAT, false, Float32Array.BYTES_PER_ELEMENT * 6, Float32Array.BYTES_PER_ELEMENT * 3);
 
     // set matrices
     const projectionM = camera.getProjectionMatrix();
@@ -124,6 +124,6 @@ export default () => {
     gl.uniformMatrix4fv(projectionMatrixUniformLocation, false, projectionM.toFloat32Array());
 
     // draw
-    gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 6);
+    gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 3);
   });
 }
