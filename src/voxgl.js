@@ -37,11 +37,6 @@ export default () => {
   const viewMatrixUniformLocation = gl.getUniformLocation(program, "u_vMat");
   const projectionMatrixUniformLocation = gl.getUniformLocation(program, "u_pMat");
 
-  const verticesBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, verticesBuffer);
-
-  const vertices = [];
-
   const meshes = [];
   const cube1 = makeCube();
   const cube2 = makeCube({ position: [1, 0, 0], edge: 2 });
@@ -50,10 +45,6 @@ export default () => {
   const cube5 = makeCube({ position: [-7, 0, 0], edge: 2 });
 
   meshes.push(cube1, cube2, cube3, cube4, cube5);
-
-  meshes.forEach(mesh => vertices.push(...mesh.getTriFacesVertices()));
-
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 
   const camera = makePerspectiveCamera({
     aspect: gl.canvas.clientWidth / gl.canvas.clientHeight,
@@ -74,26 +65,30 @@ export default () => {
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    // object state
-    // set attributes
-    gl.useProgram(program);
-    gl.enableVertexAttribArray(positionAttributeLocation);
-    // gl.enableVertexAttribArray(colorAttributeLocation);
+    // mesh rendering
+    meshes.forEach(mesh => {
+      // set attributes
+      gl.useProgram(program);
+      gl.enableVertexAttribArray(positionAttributeLocation);
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, verticesBuffer);
-    gl.vertexAttribPointer(
-      positionAttributeLocation, 3, gl.FLOAT, false, 0, 0);
-    // gl.vertexAttribPointer(
-    //   colorAttributeLocation, 3, gl.FLOAT, false, Float32Array.BYTES_PER_ELEMENT * 6, Float32Array.BYTES_PER_ELEMENT * 3);
+      const vertices = mesh.getTriFacesVertices();
 
-    // set matrices
-    const projectionM = camera.getProjectionMatrix();
-    const viewM = camera.getViewMatrix();
-    gl.uniformMatrix4fv(modelMatrixUniformLocation, false, modelM.toFloat32Array());
-    gl.uniformMatrix4fv(viewMatrixUniformLocation, false, viewM.toFloat32Array());
-    gl.uniformMatrix4fv(projectionMatrixUniformLocation, false, projectionM.toFloat32Array());
+      const verticesBuffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, verticesBuffer);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 
-    // draw
-    gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 3);
+      gl.vertexAttribPointer(
+        positionAttributeLocation, 3, gl.FLOAT, false, 0, 0);
+
+      // set matrices
+      const projectionM = camera.getProjectionMatrix();
+      const viewM = camera.getViewMatrix();
+      gl.uniformMatrix4fv(modelMatrixUniformLocation, false, modelM.toFloat32Array());
+      gl.uniformMatrix4fv(viewMatrixUniformLocation, false, viewM.toFloat32Array());
+      gl.uniformMatrix4fv(projectionMatrixUniformLocation, false, projectionM.toFloat32Array());
+
+      // draw
+      gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 3);
+    });
   });
 }
