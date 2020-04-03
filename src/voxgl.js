@@ -42,10 +42,16 @@ export default () => {
 
   const vertices = [];
 
+  const meshes = [];
   const cube1 = makeCube();
   const cube2 = makeCube({ position: [1, 0, 0], edge: 2 });
+  const cube3 = makeCube({ position: [3, 0, 0] });
+  const cube4 = makeCube({ position: [-4, 0, 0], edge: 3 });
+  const cube5 = makeCube({ position: [-7, 0, 0], edge: 2 });
 
-  vertices.push(...cube1.getTriFacesVertices(), ...cube2.getTriFacesVertices());
+  meshes.push(cube1, cube2, cube3, cube4, cube5);
+
+  meshes.forEach(mesh => vertices.push(...mesh.getTriFacesVertices()));
 
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 
