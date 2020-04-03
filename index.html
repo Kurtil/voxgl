@@ -2,25 +2,22 @@
   <canvas id="canvas3d"></canvas>
   <script id="2d-vertex-shader" type="notjs">
     attribute vec4 a_position;
-    attribute vec3 a_color;
     uniform mat4 u_mMat;
     uniform mat4 u_vMat;
     uniform mat4 u_pMat;
-    // varying vec3 v_color;
 
     void main() {
       gl_Position = u_pMat * u_vMat * u_mMat * a_position;
-      // v_color = a_color;
     }
   </script>
 
   <script id="2d-fragment-shader" type="notjs">
     precision mediump float;
 
-    // varying vec3 v_color;
+    uniform vec3 u_color;
 
     void main() {
-      gl_FragColor = vec4(0, 0, 1, 1);
+      gl_FragColor = vec4(u_color, 1);
     }
   </script>
   <script type="module">

@@ -31,24 +31,24 @@ export default () => {
   const program = createProgram(gl, vertexShader, fragmentShader);
 
   const positionAttributeLocation = gl.getAttribLocation(program, "a_position");
-  // const colorAttributeLocation = gl.getUniformLocation(program, "a_color");
 
   const modelMatrixUniformLocation = gl.getUniformLocation(program, "u_mMat");
   const viewMatrixUniformLocation = gl.getUniformLocation(program, "u_vMat");
   const projectionMatrixUniformLocation = gl.getUniformLocation(program, "u_pMat");
+  const colorUniformLocation = gl.getUniformLocation(program, "u_color");
 
   const meshes = [];
   const cube1 = makeCube();
-  const cube2 = makeCube({ position: [1, 0, 0], edge: 2 });
-  const cube3 = makeCube({ position: [3, 0, 0] });
-  const cube4 = makeCube({ position: [-4, 0, 0], edge: 3 });
-  const cube5 = makeCube({ position: [-7, 0, 0], edge: 2 });
+  const cube2 = makeCube({ position: [1, 0, 0], edge: 2, color: [1, 0, 0] });
+  const cube3 = makeCube({ position: [3, 0, 0], color: [0, 1, 0] });
+  const cube4 = makeCube({ position: [-4, 0, 0], edge: 3, color: [0, 0, 1] });
+  const cube5 = makeCube({ position: [-7, 0, 0], edge: 2, color: [1, 1, 0] });
 
   meshes.push(cube1, cube2, cube3, cube4, cube5);
 
   const camera = makePerspectiveCamera({
     aspect: gl.canvas.clientWidth / gl.canvas.clientHeight,
-    eye: [-5, 10, 0],
+    eye: [-5, 5, 20],
     look: [0, 0, -20]
   });
 
@@ -57,9 +57,10 @@ export default () => {
 
   // RENDERING
 
-  const modelM = new DOMMatrix().translate(0, 0, -20);
-
   clock.on("tick", () => {
+
+    cube5.rotate(1);
+    cube2.rotate(0, 2);
 
     // gobal state
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
@@ -83,9 +84,10 @@ export default () => {
       // set matrices
       const projectionM = camera.getProjectionMatrix();
       const viewM = camera.getViewMatrix();
-      gl.uniformMatrix4fv(modelMatrixUniformLocation, false, modelM.toFloat32Array());
+      gl.uniformMatrix4fv(modelMatrixUniformLocation, false, mesh.getTransform().toFloat32Array());
       gl.uniformMatrix4fv(viewMatrixUniformLocation, false, viewM.toFloat32Array());
       gl.uniformMatrix4fv(projectionMatrixUniformLocation, false, projectionM.toFloat32Array());
+      gl.uniform3fv(colorUniformLocation, mesh.getColor());
 
       // draw
       gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 3);

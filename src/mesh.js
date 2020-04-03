@@ -1,4 +1,4 @@
-export const makeCube = ({ position = [0, 0, 0], edge = 1 } = {}) => {
+export const makeCube = ({ position = [0, 0, 0], edge = 1, color = [0, 0, 0] } = {}) => {
   const [x, y, z] = position;
   // points => 4 from bottom face, clockwise, starting at the top left, then right face, same order.
   const points = [
@@ -13,6 +13,8 @@ export const makeCube = ({ position = [0, 0, 0], edge = 1 } = {}) => {
     [x + edge, y + edge, z + edge],
     [x, y + edge, z + edge],
   ];
+
+  let transform = new DOMMatrix();
 
   function getTriFacesVertices() {
     return [
@@ -64,7 +66,15 @@ export const makeCube = ({ position = [0, 0, 0], edge = 1 } = {}) => {
 
   return {
     points,
-    // getQuadFaces,
-    getTriFacesVertices
+    getTriFacesVertices,
+    getTransform() {
+      return transform;
+    },
+    getColor() {
+      return color;
+    },
+    rotate(x = 0, y = 0, z = 0) {
+      transform.rotateSelf(x, y, z);
+    },
   }
 }
