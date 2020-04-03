@@ -8,6 +8,8 @@ import makeClock from "./clock.js";
 
 import { makePerspectiveCamera } from "./camera.js";
 
+import { makeCube } from "./mesh.js";
+
 // INITIALIZATION
 
 export default () => {
@@ -38,51 +40,13 @@ export default () => {
   const verticesBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, verticesBuffer);
 
-  // three 2d points
-  const vertices = [
-    // Front face
-    0, 0, 0,
-    1, 0, 0,
-    0, 1, 0,
-    0, 1, 0,
-    1, 0, 0,
-    1, 1, 0,
-    // Back face
-    1, 0, -1,
-    0, 0, -1,
-    1, 1, -1,
-    1, 1, -1,
-    0, 0, -1,
-    0, 1, -1,
-    // Top face
-    0, 1, 0,
-    1, 1, 0,
-    0, 1, -1,
-    0, 1, -1,
-    1, 1, 0,
-    1, 1, -1,
-    // Bottom face
-    0, 0, -1,
-    1, 0, -1,
-    0, 0, 0,
-    0, 0, 0,
-    1, 0, -1,
-    1, 0, 0,
-    // Right face
-    1, 0, 0,
-    1, 0, -1,
-    1, 1, 0,
-    1, 1, 0,
-    1, 0, -1,
-    1, 1, -1,
-    // Left face
-    0, 0, -1,
-    0, 0, 0,
-    0, 1, -1,
-    0, 1, -1,
-    0, 0, 0,
-    0, 1, 0,
-  ];
+  const vertices = [];
+
+  const cube1 = makeCube();
+  const cube2 = makeCube({ position: [1, 0, 0], edge: 2 });
+
+  vertices.push(...cube1.getTriFacesVertices(), ...cube2.getTriFacesVertices());
+
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 
   const camera = makePerspectiveCamera({
