@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rollup -c --environment BUILD:production",
     "prebuild": "rm -rf dist",
-    "start": "rollup --watch -c --environment BUILD:development",
+    "start": "rollup --watch -c --environment BUILD:development --sourcemap",
     "prepublishOnly": "npm run build"
   },
   "repository": {
