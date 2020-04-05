@@ -28,7 +28,7 @@ const keyname = {
   19: 'PAUSE'
 };
 
-function makeInputHandler(domElement) {
+export default function makeInputHandler(domElement) {
   let offset = { x: 0, y: 0 };
   let onClick = null;
   let onKeyUp = null;
@@ -93,7 +93,7 @@ function makeInputHandler(domElement) {
     for (let i = 65; i < 128; i++) {
       keys[String.fromCharCode(i)] = false;
     }
-    for (i in keyname) {
+    for (let i in keyname) {
       keys[keyname[i]] = false;
     }
     mouse = { down: false, x: 0, y: 0 };
@@ -133,5 +133,11 @@ function makeInputHandler(domElement) {
       return keyname[key];
     }
     return String.fromCharCode(key);
+  }
+
+  return {
+    keys,
+    mouse,
+    element: domElement
   }
 }

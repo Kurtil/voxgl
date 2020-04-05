@@ -1,3 +1,4 @@
+import glMatrix from "./lib/gl-matrix.js";
 
 export default (input, camera) => ({
   input,
@@ -13,7 +14,7 @@ export default (input, camera) => ({
     }
 
     const inverseRotation = this.camera.getInverseRotation(),
-      direction = vec3.create();
+      direction = glMatrix.vec3.create();
 
     if (this.input.keys.W || this.input.keys.UP) {
       direction[2] = -1;
@@ -27,8 +28,8 @@ export default (input, camera) => ({
     else if (this.input.keys.D || this.input.keys.RIGHT) {
       direction[0] = 1;
     }
-    vec3.scale(vec3.normalize(direction), td * this.velocity);
-    mat4.multiplyVec3(inverseRotation, direction);
-    vec3.add(this.camera.position, direction);
+    glMatrix.vec3.scale(glMatrix.vec3.normalize(direction), td * this.velocity);
+    glMatrix.mat4.multiplyVec3(inverseRotation, direction);
+    glMatrix.vec3.add(this.camera.position, direction);
   }
 });

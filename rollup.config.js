@@ -12,5 +12,7 @@ export default {
     file: "dist/voxgl.esm.js",
     format: "es"
   }],
-  plugins: [isProduction ? terser() : null]
+  plugins: [
+    isProduction ? terser() : null
+  ]
 };

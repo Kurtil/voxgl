@@ -23,8 +23,8 @@ function createProgram(gl, vertexShader, fragmentShader) {
   }
 }
 
-function makeShaderProgram(gl, vertexSource, fragmentSource) {
-  const program = createProgram(gl, vertexSource, fragmentSource);
+function makeShaderProgram(gl, vertex, fragment) {
+  const program = createProgram(gl, vertex, fragment);
 
   const uniformLocations = {};
   const uniformValues = {};
@@ -123,10 +123,26 @@ function makeShaderProgram(gl, vertexSource, fragmentSource) {
     return attributeLocations[name];
   }
 
+  return {
+    use,
+    getAttribLocation,
+    uniforms
+  }
+
 }
 
-function makeShaderManager(resources) {
-  const shaderPrograms = [];
+export default function makeShaderManager(gl) {
+  const shaderPrograms = new Map();
 
-  // TODO create propert shader manager
+  return {
+    add({ name, vertex, frag } = {}) {
+      shaderPrograms.set(name, makeShaderProgram(gl,
+        createShader(gl, gl.VERTEX_SHADER, vertex),
+        createShader(gl, gl.FRAGMENT_SHADER, frag))
+      );
+    },
+    get(name) {
+      return shaderPrograms.get(name);
+    }
+  }
 }

@@ -49,7 +49,7 @@ export function createTexture2D(gl, image) {
     }
 }
 
-export function createVBO(gl, data) {
+export function makeVBO(gl, data) {
     const buffer = gl.createBuffer();
     bind();
     gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
@@ -67,7 +67,9 @@ export function createVBO(gl, data) {
     }
 
     return {
-        draw
+        draw,
+        bind,
+        unbind
     }
 }
 
