@@ -1,0 +1,33 @@
+{
+  "name": "voxgl",
+  "version": "0.0.1",
+  "description": "A voxel sandbox with Webgl.",
+  "main": "dist/voxgl.js",
+  "module": "dist/voxgl.esm.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rollup -c --environment BUILD:production",
+    "prebuild": "rm -rf dist",
+    "start": "rollup --watch -c --environment BUILD:development",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kurtil/voxgl.git"
+  },
+  "keywords": [
+    "3d",
+    "voxel",
+    "webgl"
+  ],
+  "author": "Kurtil",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Kurtil/voxgl/issues"
+  },
+  "homepage": "https://github.com/Kurtil/voxgl#readme",
+  "devDependencies": {
+    "rollup": "^2.2.0",
+    "rollup-plugin-terser": "^5.3.0"
+  }
+}

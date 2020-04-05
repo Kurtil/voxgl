@@ -1,30 +1,10 @@
 <div>
-  <canvas id="canvas3d"></canvas>
-  <script id="2d-vertex-shader" type="notjs">
-    attribute vec4 a_position;
-    uniform mat4 u_mMat;
-    uniform mat4 u_vMat;
-    uniform mat4 u_pMat;
-
-    void main() {
-      gl_Position = u_pMat * u_vMat * u_mMat * a_position;
-    }
-  </script>
-
-  <script id="2d-fragment-shader" type="notjs">
-    precision mediump float;
-
-    uniform vec3 u_color;
-
-    void main() {
-      gl_FragColor = vec4(u_color, 1);
-    }
-  </script>
+  <canvas id="canvas3d" style="width: 800px; height: 600px;"></canvas>
   <script type="module">
-    import voxgl from './src/voxgl.js';
+    import voxgl from './dist/voxgl.esm.js';
 
-    // TODO canvas id and shaders should be placed in anoher place
-
-    voxgl();
+    voxgl({
+      canvasId: "canvas3d"
+    });
   </script>
 </div>

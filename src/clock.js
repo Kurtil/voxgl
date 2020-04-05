@@ -13,15 +13,10 @@ export default function makeClock(
     const events = makeEventHandler();
     let running = false;
     let time = null;
-    let nextTickFunction = null;
 
     function tick() {
         const t = now();
         const dt = t - time;
-        if (nextTickFunction) {
-            nextTickFunction(dt);
-            nextTickFunction = null;
-        }
         events.emit("tick", dt);
         time = t;
     }
@@ -43,12 +38,6 @@ export default function makeClock(
         },
         stop() {
             running = false;
-        },
-        nextTick(func) {
-            if (typeof func !== "function") {
-                throw `nextTick argument must be a function, get ${typeof func}.`;
-            }
-            nextTickFunction = func;
         },
         ...events
     };
