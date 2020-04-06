@@ -5,7 +5,7 @@ import makeInputHandler from "./input.js";
 import makeShaderManager from "./shaderManager.js";
 import { makeGraph, makeCamera, makeMaterial, makeSimpleMesh } from "./scene.js";
 import makeMouseController from "./mouseController.js";
-import { makeVBO } from "./webglUtils.js";
+import { makeVBO, resize } from "./webglUtils.js";
 import mesh from "./mesh.js";
 
 export default ({ canvasId }) => {
@@ -25,6 +25,7 @@ export default ({ canvasId }) => {
 
   const clock = makeClock();
   clock.on("tick", td => {
+    resize(canvas);
     mousecontroller.tick(td);
     graph.draw();
   });
@@ -36,8 +37,8 @@ export default ({ canvasId }) => {
   graph.root.append(camera);
   mousecontroller.camera = camera;
   gl.clearColor(0.5, 0.6, 0.8, 1.0);
-  graph.viewportWidth = canvas.width;
-  graph.viewportHeight = canvas.height;
+  graph.viewportWidth = canvas.clientWidth;
+  graph.viewportHeight = canvas.clientHeight;
 
   clock.start();
 };
