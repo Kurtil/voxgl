@@ -13,8 +13,8 @@ export default (input, camera) => ({
       this.camera.pitch += 0.001 * y * td / 1000;
     }
 
-    const inverseRotation = this.camera.getInverseRotation(),
-      direction = glMatrix.vec3.create();
+    const inverseRotation = this.camera.getInverseRotation();
+    const direction = glMatrix.vec3.create();
 
     if (this.input.keys.W || this.input.keys.UP) {
       direction[2] = -1;
