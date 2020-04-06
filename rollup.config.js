@@ -1,4 +1,5 @@
 import { terser } from "rollup-plugin-terser";
+import resolve from '@rollup/plugin-node-resolve';
 
 const isProduction = (process.env.BUILD === "production");
 
@@ -13,6 +14,7 @@ export default {
     format: "es"
   }],
   plugins: [
-    isProduction ? terser() : null
+    isProduction ? terser() : null,
+    resolve({ browser: true })
   ]
 };
