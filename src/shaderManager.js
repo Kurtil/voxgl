@@ -36,7 +36,7 @@ function makeShaderProgram(gl, vertex, fragment) {
   }
 
   function prepareUniforms(values) {
-    uniformNames = Object.keys(values);
+    uniformNames = Object.keys(Object.getPrototypeOf(values));
     for (let uniformName of uniformNames) {
       uniformLocations[uniformName] = gl.getUniformLocation(program, uniformName);
     }
@@ -61,7 +61,9 @@ function makeShaderProgram(gl, vertex, fragment) {
       else if (value.length) {
         const value2 = uniformValues[uniformName];
         if (value2 !== undefined) {
-          for (let j = 0, l = value.length; j < l; j++) {
+          let j;
+          let l;
+          for (j = 0, l = value.length; j < l; j++) {
             if (value[j] != value2[j]) break;
           }
           // already set

@@ -1,7 +1,3 @@
-function clamp(a, b, c) {
-  return a < b ? b : (a > c ? c : a);
-};
-
 // mapping keycodes to names
 const keyname = {
   32: 'SPACE',
@@ -30,14 +26,9 @@ const keyname = {
 
 export default function makeInputHandler(domElement) {
   let offset = { x: 0, y: 0 };
-  let onClick = null;
-  let onKeyUp = null;
-  let onKeyDown = null;
   let hasFocus = true;
   let mouse = {};
   let keys = {};
-  let width = 0; // TODO this value should be fixed
-  let height = 0; // TODO this value should be fixed
 
   bind(domElement);
   reset();
@@ -47,11 +38,11 @@ export default function makeInputHandler(domElement) {
     offset = { x, y };
 
     document.addEventListener("keydown", e =>
-      !keyDown(e.keyCode)
+      keyDown(e.keyCode)
     );
 
     document.addEventListener("keyup", e =>
-      !keyUp(e.keyCode)
+      keyUp(e.keyCode)
     );
 
     window.addEventListener("click", e => {
@@ -65,13 +56,13 @@ export default function makeInputHandler(domElement) {
 
     window.addEventListener("blur", blur);
 
-    document.addEventListener("mousemove", e => {
+    domElement.addEventListener("mousemove", e => {
       mouseMove(e.pageX, e.pageY);
     });
-    document.addEventListener("mousedowb", () => {
-      mosueDown();
+    domElement.addEventListener("mousedown", () => {
+      mouseDown();
     });
-    document.addEventListener("mousemove", () => {
+    domElement.addEventListener("mouseup", () => {
       mouseUp();
     });
     // prevent text selection in browsers that support it
@@ -100,33 +91,21 @@ export default function makeInputHandler(domElement) {
   }
   function keyDown(key) {
     const name = _getKeyName(key);
-    const wasDown = keys[name];
     keys[name] = true;
-    if (onKeyDown && !wasDown) {
-      onKeyDown(name);
-    }
-    return hasFocus;
   }
   function keyUp(key) {
     const name = _getKeyName(key);
     keys[name] = false;
-    if (onKeyUp) {
-      onKeyUp(name);
-    }
-    return hasFocus;
   }
   function mouseDown() {
     mouse.down = true;
   }
   function mouseUp() {
     mouse.down = false;
-    if (hasFocus && onClick) {
-      onClick(mouse.x, mouse.y);
-    }
   }
   function mouseMove(x, y) {
-    mouse.x = clamp(x - offset.x, 0, width);
-    mouse.y = clamp(y - offset.y, 0, height);
+    mouse.x = x - offset.x;
+    mouse.y = y - offset.y;
   }
   function _getKeyName(key) {
     if (key in keyname) {
@@ -138,6 +117,7 @@ export default function makeInputHandler(domElement) {
   return {
     keys,
     mouse,
-    element: domElement
+    element: domElement,
+    hasFocus
   }
 }

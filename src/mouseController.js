@@ -7,10 +7,10 @@ export default (input, camera) => ({
   tick(td) {
     if (this.camera == null) return;
     if (this.input.mouse.down) {
-      const x = this.input.mouse.x - this.input.element.width * 0.5,
-        y = this.input.mouse.y - this.input.element.height * 0.5;
-      this.camera.yaw += 0.001 * x * td;
-      this.camera.pitch += 0.001 * y * td;
+      const x = this.input.mouse.x - this.input.element.width * 0.5;
+      const y = this.input.mouse.y - this.input.element.height * 0.5;
+      this.camera.yaw += 0.001 * x * td / 1000;
+      this.camera.pitch += 0.001 * y * td / 1000;
     }
 
     const inverseRotation = this.camera.getInverseRotation(),
@@ -28,7 +28,7 @@ export default (input, camera) => ({
     else if (this.input.keys.D || this.input.keys.RIGHT) {
       direction[0] = 1;
     }
-    glMatrix.vec3.scale(glMatrix.vec3.normalize(direction), td * this.velocity);
+    glMatrix.vec3.scale(glMatrix.vec3.normalize(direction), td / 1000 * this.velocity);
     glMatrix.mat4.multiplyVec3(inverseRotation, direction);
     glMatrix.vec3.add(this.camera.position, direction);
   }
